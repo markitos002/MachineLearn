@@ -32,6 +32,8 @@ plt.show()
 sb.scatterplot(x="latitude", y="longitude", data=datos[(datos.median_income > 14)], hue="median_house_value", palette="coolwarm", size='population_normalized', sizes=(20, 200))
 plt.show()
 
-#para quitar los datos vacios
+#para quitar los datos vacios, es decir los que tienen como valor NA
 datos_na=datos.dropna()
+
+print(datos_na.info())
 
