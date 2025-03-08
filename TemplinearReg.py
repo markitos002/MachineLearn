@@ -32,3 +32,13 @@ modelo = LinearRegression()
 modelo.fit(X_procesada,Y_procesada) #entrenamiento del modelo, aca le entrego los datos de entrenamiento
 #print(modelo.coef_) #pendiente de la recta
 
+#prediccion
+prediccion = modelo.predict([[123]])
+print(prediccion)
+
+modelo.score(X_procesada,Y_procesada) #calculo de la precision del modelo
+print(modelo.score(X_procesada,Y_procesada))
+
+celsius = 258
+prediccion = modelo.predict([[celsius]])
+print(f" {celsius} grados celsius son equivalentes a {prediccion} grados fahrenheit")
