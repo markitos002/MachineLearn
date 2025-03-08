@@ -3,7 +3,7 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-datos = pd.read_csv('datosAlt.csv')
+datos = pd.read_csv('Datos/datosAlt.csv')
 
 datos.info()
 print(datos.head())  # Imprime las primeras filas del DataFrame para verificar las columnas
