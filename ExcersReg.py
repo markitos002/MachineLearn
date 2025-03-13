@@ -1,6 +1,7 @@
 import pandas as pd 
 import seaborn as sb
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.linear_model import LinearRegression
 
 datos = pd.read_csv('Datos/CasasCalifornia.csv')
@@ -61,6 +62,69 @@ print(datos_na.corr())
 #en este analisis de correlacion es solo para la columna median_house_value, sort values es para ordenar los valores de forma descendente
 print(datos_na.corr()['median_house_value'].sort_values(ascending=False))
 
+#sb.heatmap(datos_na.corr(), annot=True, cmap='coolwarm')
+#plt.show()
+
+sb.scatterplot(x=datos_na["median_house_value"], y=datos_na["median_income"])
+plt.show()
+
+#agregar nueva caracteristica
+datos_na["bedrooms_ratio"] = datos_na["total_bedrooms"] / datos_na["total_rooms"]
+#grafica cuadro de correlacion con la nueva caracteristica
 sb.heatmap(datos_na.corr(), annot=True, cmap='coolwarm')
 plt.show()
 
+#separar las caracteristicas de la etiqueta
+X = datos_na.drop(columns=['median_house_value'], axis=1)
+Y = datos_na['median_house_value']
+
+#separar los datos en dos partes 1 de entrenamiento y 1 prueba
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+
+from sklearn.linear_model import LinearRegression
+
+#crear el modelo
+modelo = LinearRegression()
+
+#entrenar el modelo
+modelo.fit(X_train, Y_train)
+
+#prediccion
+prediccion = modelo.predict(X_test)
+print(prediccion)
+#persentar mejor los datos con pandas
+print(pd.DataFrame(prediccion))
+
+#vamos a comparar los datos de prediccion con los datos de prueba
+print(pd.DataFrame({'Real': Y_test, 'Prediccion': prediccion}))
+
+
+
+#calcular la precision del modelo
+#precision = modelo.score(X_test, Y_test)
+#print(precision)
+
+
+#procedimiento para mejorar el modelo "sobreajuste" - overfitting
+print(modelo.score(X_train, Y_train))
+print(modelo.score(X_test, Y_test))
+
+#error
+from sklearn.metrics import mean_squared_error
+error = mean_squared_error(Y_test, prediccion)
+print(error)
+print(np.sqrt(error)) #raiz cuadrada del error
+
+#uso de scaler para comprimir los datos, para que el modelo sea mas preciso al evaluar el modelo sin tener en cuenta la magnitud de los datos
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+modelo = LinearRegression()
+modelo.fit(X_train, Y_train)
+
+prediccion = modelo.predict(X_test)
+print(modelo.score(X_test, Y_test))
+print(np.sqrt(mean_squared_error(Y_test, prediccion)))
